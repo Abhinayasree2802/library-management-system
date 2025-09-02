@@ -1,0 +1,9 @@
+com/library/dao/AuthorDAO.class
+com/library/LibraryApplication.class
+com/library/dao/BookDAO.class
+com/library/models/Author.class
+com/library/LibraryConfiguration.class
+com/library/models/Book.class
+com/library/db/DBUtil.class
+com/library/resources/AuthorResource.class
+com/library/resources/BookResource.class

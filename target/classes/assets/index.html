@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+<div class="max-w-7xl mx-auto space-y-8">
+    <h1 class="text-4xl font-bold text-center text-gray-800">Library Management System</h1>
+
+    <!-- Status Message Box -->
+    <div id="status-message" class="hidden p-4 rounded-md shadow-md text-white font-medium"></div>
+
+    <!-- CRUD Sections for Authors and Books -->
+    <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Authors Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Authors</h2>
+
+            <!-- Add Author -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Add New Author</h3>
+                <form id="add-author-form" class="space-y-2">
+                    <input type="text" id="author-name" placeholder="Name" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="author-birthdate" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="author-nationality" placeholder="Nationality" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors duration-200">Add Author</button>
+                </form>
+            </div>
+
+            <!-- View All Authors -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">View All Authors</h3>
+                <button onclick="getAllAuthors()" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition-colors duration-200">Refresh Authors List</button>
+                <pre id="authors-list" class="bg-gray-50 p-4 rounded-md mt-4 text-sm whitespace-pre-wrap break-words"></pre>
+            </div>
+
+            <!-- Find Author -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Find Author by ID</h3>
+                <div class="flex space-x-2">
+                    <input type="text" id="find-author-id" placeholder="Author ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="getAuthorById()" class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition-colors duration-200">Find</button>
+                </div>
+                <pre id="author-details" class="bg-gray-50 p-4 rounded-md mt-4 text-sm whitespace-pre-wrap break-words"></pre>
+            </div>
+
+            <!-- Update Author -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Update Author</h3>
+                <form id="update-author-form" class="space-y-2">
+                    <input type="text" id="update-author-id" placeholder="Author ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="update-author-name" placeholder="New Name" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="update-author-birthdate" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="update-author-nationality" placeholder="New Nationality" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 transition-colors duration-200">Update Author</button>
+                </form>
+            </div>
+
+            <!-- Delete Author -->
+            <div>
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Delete Author</h3>
+                <div class="flex space-x-2">
+                    <input type="text" id="delete-author-id" placeholder="Author ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="deleteAuthorById()" class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition-colors duration-200">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-700">Books</h2>
+
+            <!-- Add Book -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Add New Book</h3>
+                <form id="add-book-form" class="space-y-2">
+                    <input type="text" id="book-title" placeholder="Title" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="book-author-id" placeholder="Author ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="book-published-date" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="book-isbn" placeholder="ISBN" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors duration-200">Add Book</button>
+                </form>
+            </div>
+
+            <!-- View All Books -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">View All Books</h3>
+                <button onclick="getAllBooks()" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition-colors duration-200">Refresh Books List</button>
+                <pre id="books-list" class="bg-gray-50 p-4 rounded-md mt-4 text-sm whitespace-pre-wrap break-words"></pre>
+            </div>
+
+            <!-- Find Book -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Find Book by ID</h3>
+                <div class="flex space-x-2">
+                    <input type="text" id="find-book-id" placeholder="Book ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="getBookById()" class="bg-gray-500 text-white p-2 rounded-md hover:bg-gray-600 transition-colors duration-200">Find</button>
+                </div>
+                <pre id="book-details" class="bg-gray-50 p-4 rounded-md mt-4 text-sm whitespace-pre-wrap break-words"></pre>
+            </div>
+
+            <!-- Update Book -->
+            <div class="mb-6 border-b pb-4 border-gray-200">
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Update Book</h3>
+                <form id="update-book-form" class="space-y-2">
+                    <input type="text" id="update-book-id" placeholder="Book ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="update-book-title" placeholder="New Title" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="update-book-author-id" placeholder="New Author ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="date" id="update-book-published-date" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="update-book-isbn" placeholder="New ISBN" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="w-full bg-yellow-500 text-white p-2 rounded-md hover:bg-yellow-600 transition-colors duration-200">Update Book</button>
+                </form>
+            </div>
+
+            <!-- Delete Book -->
+            <div>
+                <h3 class="text-xl font-medium mb-2 text-gray-600">Delete Book</h3>
+                <div class="flex space-x-2">
+                    <input type="text" id="delete-book-id" placeholder="Book ID" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="deleteBookById()" class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition-colors duration-200">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+
+    // Helper function to show status messages
+    function showStatus(message, isError = false) {
+        const statusBox = document.getElementById('status-message');
+        statusBox.textContent = message;
+        statusBox.classList.remove('hidden', 'bg-red-500', 'bg-green-500');
+        statusBox.classList.add(isError ? 'bg-red-500' : 'bg-green-500');
+        setTimeout(() => statusBox.classList.add('hidden'), 5000);
+    }
+
+    // --- Author Functions ---
+
+    async function getAllAuthors() {
+        try {
+            const response = await fetch(`${API_URL}/authors`);
+            const data = await response.json();
+            document.getElementById('authors-list').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+            showStatus('Error fetching authors: ' + error.message, true);
+            console.error('Error fetching authors:', error);
+        }
+    }
+
+    document.getElementById('add-author-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('author-name').value;
+        const birthdate = document.getElementById('author-birthdate').value;
+        const nationality = document.getElementById('author-nationality').value;
+        const newAuthor = { name, birthdate, nationality };
+
+        try {
+            const response = await fetch(`${API_URL}/authors`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newAuthor)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showStatus('Author added successfully!');
+                getAllAuthors();
+            } else {
+                showStatus('Failed to add author: ' + (data.message || response.statusText), true);
+            }
+        } catch (error) {
+            showStatus('Error adding author: ' + error.message, true);
+        }
+    });
+
+    async function getAuthorById() {
+        const id = document.getElementById('find-author-id').value;
+        if (!id) { showStatus('Please enter an Author ID', true); return; }
+        try {
+            const response = await fetch(`${API_URL}/authors/${id}`);
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('author-details').textContent = JSON.stringify(data, null, 2);
+            } else {
+                showStatus('Author not found', true);
+                document.getElementById('author-details').textContent = 'Author not found';
+            }
+        } catch (error) {
+            showStatus('Error finding author: ' + error.message, true);
+        }
+    }
+
+    document.getElementById('update-author-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('update-author-id').value;
+        const name = document.getElementById('update-author-name').value;
+        const birthdate = document.getElementById('update-author-birthdate').value;
+        const nationality = document.getElementById('update-author-nationality').value;
+
+        if (!id) { showStatus('Please enter an Author ID to update', true); return; }
+
+        const updatedAuthor = { id, name, birthdate, nationality };
+
+        try {
+            const response = await fetch(`${API_URL}/authors/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedAuthor)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showStatus('Author updated successfully!');
+                getAllAuthors();
+            } else {
+                showStatus('Failed to update author: ' + (data.message || response.statusText), true);
+            }
+        } catch (error) {
+            showStatus('Error updating author: ' + error.message, true);
+        }
+    });
+
+    async function deleteAuthorById() {
+        const id = document.getElementById('delete-author-id').value;
+        if (!id) { showStatus('Please enter an Author ID to delete', true); return; }
+        try {
+            const response = await fetch(`${API_URL}/authors/${id}`, { method: 'DELETE' });
+            if (response.status === 204) {
+                showStatus('Author deleted successfully!');
+                getAllAuthors();
+            } else {
+                showStatus('Failed to delete author: ' + response.statusText, true);
+            }
+        } catch (error) {
+            showStatus('Error deleting author: ' + error.message, true);
+        }
+    }
+
+    // --- Book Functions ---
+
+    async function getAllBooks() {
+        try {
+            const response = await fetch(`${API_URL}/books`);
+            const data = await response.json();
+            document.getElementById('books-list').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+            showStatus('Error fetching books: ' + error.message, true);
+            console.error('Error fetching books:', error);
+        }
+    }
+
+    document.getElementById('add-book-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = document.getElementById('book-title').value;
+        const authorId = document.getElementById('book-author-id').value;
+        const publishedDate = document.getElementById('book-published-date').value;
+        const isbn = document.getElementById('book-isbn').value;
+        const newBook = { title, authorId: parseInt(authorId), publishedDate, isbn };
+
+        try {
+            const response = await fetch(`${API_URL}/books`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newBook)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showStatus('Book added successfully!');
+                getAllBooks();
+            } else {
+                showStatus('Failed to add book: ' + (data.message || response.statusText), true);
+            }
+        } catch (error) {
+            showStatus('Error adding book: ' + error.message, true);
+        }
+    });
+
+    async function getBookById() {
+        const id = document.getElementById('find-book-id').value;
+        if (!id) { showStatus('Please enter a Book ID', true); return; }
+        try {
+            const response = await fetch(`${API_URL}/books/${id}`);
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('book-details').textContent = JSON.stringify(data, null, 2);
+            } else {
+                showStatus('Book not found', true);
+                document.getElementById('book-details').textContent = 'Book not found';
+            }
+        } catch (error) {
+            showStatus('Error finding book: ' + error.message, true);
+        }
+    }
+
+    document.getElementById('update-book-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('update-book-id').value;
+        const title = document.getElementById('update-book-title').value;
+        const authorId = document.getElementById('update-book-author-id').value;
+        const publishedDate = document.getElementById('update-book-published-date').value;
+        const isbn = document.getElementById('update-book-isbn').value;
+
+        if (!id) { showStatus('Please enter a Book ID to update', true); return; }
+
+        const updatedBook = { id, title, authorId: parseInt(authorId), publishedDate, isbn };
+
+        try {
+            const response = await fetch(`${API_URL}/books/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedBook)
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showStatus('Book updated successfully!');
+                getAllBooks();
+            } else {
+                showStatus('Failed to update book: ' + (data.message || response.statusText), true);
+            }
+        } catch (error) {
+            showStatus('Error updating book: ' + error.message, true);
+        }
+    });
+
+    async function deleteBookById() {
+        const id = document.getElementById('delete-book-id').value;
+        if (!id) { showStatus('Please enter a Book ID to delete', true); return; }
+        try {
+            const response = await fetch(`${API_URL}/books/${id}`, { method: 'DELETE' });
+            if (response.status === 204) {
+                showStatus('Book deleted successfully!');
+                getAllBooks();
+            } else {
+                showStatus('Failed to delete book: ' + response.statusText, true);
+            }
+        } catch (error) {
+            showStatus('Error deleting book: ' + error.message, true);
+        }
+    }
+
+    // Initial data load
+    window.onload = () => {
+        getAllAuthors();
+        getAllBooks();
+    };
+</script>
+</body>
+</html>
+```
+eof
+
+### 3. How to Use the Front-End
+
+1.  **Place the file:** Save the code above as `index.html` inside the `src/main/resources/assets/` folder you created.
+2.  **Rebuild the project:** Open your terminal, navigate to the project's root directory, and run `mvn clean install` to rebuild your application with the new front-end file and the updated application class.
+3.  **Run the server:** Start your application using the command:
+```bash
+java -jar target/library-management-system-1.0-SNAPSHOT.jar server src/main/resources/config.yml
+
